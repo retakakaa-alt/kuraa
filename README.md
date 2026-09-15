@@ -1,0 +1,2 @@
+# kuraa
+kura kanji
