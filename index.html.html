@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanji 亀 (Kame) - Animasi Urutan Goresan</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        svg {
+            background-color: #ffffff;
+            display: block;
+        }
+
+        /* Bayangan dasar kanji (tipis) agar bentuk terlihat sebelum digambar */
+        .bg-stroke {
+            stroke: #f0f0f0;
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+
+        /* Goresan animasi utama (Warna Hitam) */
+        .kanji-stroke {
+            stroke: #000000;
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+
+        /* Angka nomor urutan (Warna Hitam) */
+        .stroke-number {
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            fill: #000000;
+            opacity: 0;
+            transition: opacity 0.25s ease-in-out;
+        }
+
+        .stroke-number.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <svg id="kanjiSvg" width="300" height="300" viewBox="0 0 300 300">
+        <!-- Panduan Bayangan Tipis -->
+        <g>
+            <path class="bg-stroke" d="M 115 35 Q 90 60 55 85" />
+            <path class="bg-stroke" d="M 115 35 L 210 35 L 155 80" />
+            <path class="bg-stroke" d="M 80 90 L 92 160" />
+            <path class="bg-stroke" d="M 80 90 L 225 90 L 215 150" />
+            <path class="bg-stroke" d="M 85 113 L 221 113" />
+            <path class="bg-stroke" d="M 88 136 L 217 136" />
+            <path class="bg-stroke" d="M 65 180 L 78 250" />
+            <path class="bg-stroke" d="M 65 180 L 245 180 L 235 242" />
+            <path class="bg-stroke" d="M 70 205 L 240 205" />
+            <path class="bg-stroke" d="M 75 230 L 237 230" />
+            <path class="bg-stroke" d="M 150 90 L 150 260 Q 150 280 175 280 L 255 280 Q 275 280 275 250" />
+        </g>
+
+        <!-- Goresan Beranimasi (Hitam) -->
+        <g id="animatedStrokes">
+            <path class="kanji-stroke" d="M 115 35 Q 90 60 55 85" />
+            <path class="kanji-stroke" d="M 115 35 L 210 35 L 155 80" />
+            <path class="kanji-stroke" d="M 80 90 L 92 160" />
+            <path class="kanji-stroke" d="M 80 90 L 225 90 L 215 150" />
+            <path class="kanji-stroke" d="M 85 113 L 221 113" />
+            <path class="kanji-stroke" d="M 88 136 L 217 136" />
+            <path class="kanji-stroke" d="M 65 180 L 78 250" />
+            <path class="kanji-stroke" d="M 65 180 L 245 180 L 235 242" />
+            <path class="kanji-stroke" d="M 70 205 L 240 205" />
+            <path class="kanji-stroke" d="M 75 230 L 237 230" />
+            <path class="kanji-stroke" d="M 150 90 L 150 260 Q 150 280 175 280 L 255 280 Q 275 280 275 250" />
+        </g>
+
+        <!-- Angka Urutan (Hitam) -->
+        <g id="strokeNumbers">
+            <text class="stroke-number" x="100" y="25">1</text>
+            <text class="stroke-number" x="135" y="25">2</text>
+            <text class="stroke-number" x="65" y="115">3</text>
+            <text class="stroke-number" x="85" y="80">4</text>
+            <text class="stroke-number" x="95" y="108">5</text>
+            <text class="stroke-number" x="98" y="131">6</text>
+            <text class="stroke-number" x="50" y="200">7</text>
+            <text class="stroke-number" x="70" y="172">8</text>
+            <text class="stroke-number" x="80" y="200">9</text>
+            <text class="stroke-number" x="85" y="225">10</text>
+            <text class="stroke-number" x="155" y="110">11</text>
+        </g>
+    </svg>
+
+<script>
+    const strokes = document.querySelectorAll('.kanji-stroke');
+    const numbers = document.querySelectorAll('.stroke-number');
+    const strokeLengths = [];
+
+    strokes.forEach((stroke) => {
+        const length = stroke.getTotalLength();
+        strokeLengths.push(length);
+        stroke.style.strokeDasharray = length;
+        stroke.style.strokeDashoffset = length;
+    });
+
+    async function animateKanji() {
+        while (true) {
+            strokes.forEach((stroke, i) => {
+                stroke.style.transition = 'none';
+                stroke.style.strokeDashoffset = strokeLengths[i];
+                numbers[i].classList.remove('visible');
+            });
+
+            await new Promise(r => setTimeout(r, 500));
+
+            for (let i = 0; i < strokes.length; i++) {
+                const stroke = strokes[i];
+                const length = strokeLengths[i];
+                const duration = Math.max(350, length * 2.8);
+
+                numbers[i].classList.add('visible');
+                stroke.style.transition = `stroke-dashoffset ${duration}ms ease-in-out`;
+                stroke.style.strokeDashoffset = '0';
+
+                await new Promise(r => setTimeout(r, duration + 150));
+            }
+
+            await new Promise(r => setTimeout(r, 2000));
+        }
+    }
+
+    window.onload = animateKanji;
+</script>
+
+</body>
+</html>
